@@ -23,6 +23,8 @@ app.get('/api/users/account', authenticateUser, userCltr.account)
 
 //Tags
 app.post('/api/tags/create', authenticateUser, authorizeUser(['admin']), tagCltr.create)
+app.get('/api/tags/list', authenticateUser, authorizeUser(['admin']), tagCltr.list)
+
 
 app.listen(port, () => {
   console.log('Server running on port', port)
