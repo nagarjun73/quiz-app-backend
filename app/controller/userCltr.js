@@ -2,22 +2,28 @@ const _ = require('lodash')
 const bcryptjs = require('bcryptjs')
 const jwt = require('jsonwebtoken')
 const User = require('../model/user-model')
+const { validationResult } = require('express-validator')
 
 const userCltr = {}
 
 userCltr.register = async (req, res) => {
-  const body = _.pick(req.body, ['username', 'email', 'password'])
   try {
-    const usr = new User(body)
-    const salt = await bcryptjs.genSalt()
-    const hashedPassword = await bcryptjs.hash(body.password, salt)
-    usr.password = hashedPassword
-    const totalUsers = await User.countDocuments()
-    if (totalUsers == 0) {
-      usr.role = 'admin'
+    const errors = validationResult(req)
+    if (!errors.isEmpty()) {
+      res.status(400).json({ errors: errors.array() })
+    } else {
+      const body = _.pick(req.body, ['username', 'email', 'password'])
+      const usr = new User(body)
+      const salt = await bcryptjs.genSalt()
+      const hashedPassword = await bcryptjs.hash(body.password, salt)
+      usr.password = hashedPassword
+      const totalUsers = await User.countDocuments()
+      if (totalUsers == 0) {
+        usr.role = 'admin'
+      }
+      await usr.save()
+      res.json(usr)
     }
-    await usr.save()
-    res.json(usr)
   } catch (e) {
     res.status(400).json(e)
   }
@@ -47,6 +53,8 @@ userCltr.account = async (req, res) => {
   const userId = req.userId
   try {
     const user = await User.findOne({ _id: userId })
+    const displayInfo = _.pick(user, ['username', 'email', 'role'])
+    res.json(displayInfo)
   } catch (e) {
     res.json(e)
   }
