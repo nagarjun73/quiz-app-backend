@@ -6,7 +6,7 @@ const usernameValidation = {
   }
 }
 
-const emailValidation = {
+const emailRegisterValidation = {
   notEmpty: {
     errorMessage: "Email should not be empty"
   },
@@ -25,6 +25,15 @@ const emailValidation = {
   }
 }
 
+const emailLoginValidation = {
+  notEmpty: {
+    errorMessage: "Email should not be empty"
+  },
+  isEmail: {
+    errorMessage: "Invalid Email address"
+  }
+}
+
 const passwordValidation = {
   notEmpty: {
     errorMessage: "Password should not be empty"
@@ -37,10 +46,15 @@ const passwordValidation = {
 
 const userRegistrationSchema = {
   username: usernameValidation,
-  email: emailValidation,
+  email: emailRegisterValidation,
+  password: passwordValidation
+}
+
+const userLoginSchema = {
+  email: emailLoginValidation,
   password: passwordValidation
 }
 
 
 
-module.exports = { userRegistrationSchema }
+module.exports = { userRegistrationSchema, userLoginSchema }

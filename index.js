@@ -4,7 +4,7 @@ const cors = require('cors')
 const configDB = require('./config/mongodb')
 const userCltr = require('./app/controller/userCltr')
 const authenticateUser = require('./app/middleware/authenticateUser')
-const { userRegistrationSchema } = require('./app/helpers/userValidationSchema')
+const { userRegistrationSchema, userLoginSchema } = require('./app/helpers/userValidationSchema')
 const { checkSchema } = require('express-validator')
 const port = process.env.PORT
 
@@ -17,7 +17,7 @@ configDB()
 
 //User
 app.post('/api/users/register', checkSchema(userRegistrationSchema), userCltr.register)
-app.post('/api/users/login', userCltr.login)
+app.post('/api/users/login', checkSchema(userLoginSchema), userCltr.login)
 app.get('/api/users/account', authenticateUser, userCltr.account)
 
 app.listen(port, () => {
