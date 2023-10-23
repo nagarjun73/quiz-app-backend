@@ -40,7 +40,7 @@ userCltr.login = async (req, res) => {
       if (!checkPassword) {
         res.status(400).json({ errors: "Incorrect Password" })
       } else {
-        const token = jwt.sign({ id: foundUser._id }, process.env.JWT_SECRET, { expiresIn: '7d' })
+        const token = jwt.sign({ id: foundUser._id, role: foundUser.role }, process.env.JWT_SECRET, { expiresIn: '7d' })
         res.json({ token: token })
       }
     }
@@ -50,10 +50,10 @@ userCltr.login = async (req, res) => {
 }
 
 userCltr.account = async (req, res) => {
-  const userId = req.userId
+  const user = req.user
   try {
-    const user = await User.findOne({ _id: userId })
-    const displayInfo = _.pick(user, ['username', 'email', 'role'])
+    const usr = await User.findOne({ _id: user.id })
+    const displayInfo = _.pick(usr, ['username', 'email', 'role'])
     res.json(displayInfo)
   } catch (e) {
     res.json(e)
