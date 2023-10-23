@@ -13,7 +13,7 @@ const authenticateUser = async (req, res, next) => {
 
 const authorizeUser = (role) => {
   return function (req, res, next) {
-    if (role.includes(req.user)) {
+    if (role.includes(req.user.role)) {
       next()
     } else {
       res.status(403).json({ errors: "you are not permitted to access this route" })
